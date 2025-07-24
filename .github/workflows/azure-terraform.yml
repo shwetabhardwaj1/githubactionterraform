@@ -1,0 +1,42 @@
+name: Terraform Azure Storage Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  terraform-deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Confirm dev.tfvars presence
+        run: |
+          echo "Contents of env/dev.tfvars:"
+          cat env/dev.tfvars
+          echo "-----"
+          ls -l env/
+
+      - name: Terraform Plan
+        run: terraform plan -var-file="env/dev.tfvars" -out="tfplan.out"
+
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve -var-file="env/dev.tfvars"
+        env:
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
