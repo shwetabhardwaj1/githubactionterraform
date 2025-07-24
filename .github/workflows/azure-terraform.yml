@@ -8,42 +8,39 @@ on:
 jobs:
   terraform-deploy:
     runs-on: ubuntu-latest
-    env:
-          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
     defaults:
       run:
         working-directory: terraform
+    env:
+      # Auth for Azure backend
+      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # Vars for Terraform config
+      TF_VAR_client_id: ${{ secrets.AZURE_CLIENT_ID }}
+      TF_VAR_client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+      TF_VAR_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
+      TF_VAR_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Print Azure Env Vars 🔍
+      - name: Print Azure Secrets (for debug only)
         run: |
-          echo "Client ID: $AZURE_CLIENT_ID"
-          echo "Tenant ID: $AZURE_CLIENT_SECRET"
-        shell: bash
+          echo "Client ID: $TF_VAR_client_id"
+          echo "Tenant ID: $TF_VAR_tenant_id"
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
-        run: terraform init
-
-      - name: Confirm dev.tfvars presence
-        run: |
-          echo "Contents of env/dev.tfvars:"
-          cat env/dev.tfvars
-          echo "-----"
-          ls -l env/
+        run: terraform init -backend-config="key=dev.tfstate"
 
       - name: Terraform Plan
-        run: terraform plan -var-file="env/dev.tfvars" -out="tfplan.out"
-
+        run: terraform plan -out="tfplan.out"
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve -var-file="env/dev.tfvars"
-        
+        run: terraform apply -auto-approve "tfplan.out"
