@@ -16,6 +16,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Print Azure Env Vars 🔍
+        run: |
+          echo "Client ID: $ARM_CLIENT_ID"
+          echo "Tenant ID: $ARM_TENANT_ID"
+        shell: bash
+
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
 
