@@ -62,8 +62,14 @@ jobs:
       - name: Export Terraform plan to JSON
         run: terraform show -json tfplan-${{ env.TF_VAR_environment }}.out > tfplan-${{ env.TF_VAR_environment }}.json
 
-      - name: Check if plan JSON exists
-        run: test -f tfplan-${{ env.TF_VAR_environment }}.json
+      - name: Check if tfplan JSON exists
+        run: |
+          if test -f tfplan-${{ env.TF_VAR_environment }}.json; then
+            echo "Plan file exists!"
+          else
+            echo "Plan file NOT found!"
+            exit 1
+          fi
 
       - name: Upload tfplan.json as artifact
         uses: actions/upload-artifact@v4
