@@ -62,6 +62,8 @@ jobs:
       - name: Export Terraform plan to JSON
         run: terraform show -json tfplan-${{ env.TF_VAR_environment }}.out > tfplan-${{ env.TF_VAR_environment }}.json
 
+      - name: Check if plan JSON exists
+        run: test -f tfplan-${{ env.TF_VAR_environment }}.json
 
       - name: Upload tfplan.json as artifact
         uses: actions/upload-artifact@v4
@@ -69,10 +71,6 @@ jobs:
           name: terraform-plan-${{ env.TF_VAR_environment }}
           path: tfplan-${{ env.TF_VAR_environment }}.json
           retention-days: 90
-
-
-      - name: Terraform Apply
-        run: terraform apply -auto-approve "tfplan-${{ env.TF_VAR_environment }}.out"
 
   terraform-apply:
     needs: terraform-plan  #  Ensures planning completes first
