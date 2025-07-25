@@ -8,7 +8,7 @@ on:
 jobs:
   terraform-plan:
     runs-on: ubuntu-latest
-    environment: Dev  # This ties the job to the 'Dev' environment in your repo
+    
     defaults:
       run:
         working-directory: terraform
