@@ -6,9 +6,9 @@ on:
       - main
 
 jobs:
-  terraform-deploy:
+  terraform-plan:
     runs-on: ubuntu-latest
-    environment: Dev  # 👈 This ties the job to the 'Dev' environment in your repo
+    environment: Dev  # This ties the job to the 'Dev' environment in your repo
     defaults:
       run:
         working-directory: terraform
@@ -64,12 +64,46 @@ jobs:
 
 
       - name: Upload tfplan.json as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: terraform-plan-${{ env.TF_VAR_environment }}
           path: tfplan-${{ env.TF_VAR_environment }}.json
           retention-days: 90
 
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve "tfplan-${{ env.TF_VAR_environment }}.out"
+
+  terraform-apply:
+    needs: terraform-plan  #  Ensures planning completes first
+    environment: Dev       #  Triggers approval gate if reviewers are set in Dev
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform
+    env:
+      # Auth for Azure backend
+      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # Vars for Terraform config
+      TF_VAR_client_id: ${{ secrets.AZURE_CLIENT_ID }}
+      TF_VAR_client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+      TF_VAR_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
+      TF_VAR_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      TF_VAR_location: ${{ secrets.AZURE_LOCATION }}
+      TF_VAR_resourceGroupName: ${{ secrets.AZURE_RESOURCE_GROUP_NAME }}
+      TF_VAR_storageAccountName: ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}
+      TF_VAR_environment: ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Apply
         run: terraform apply -auto-approve "tfplan-${{ env.TF_VAR_environment }}.out"
