@@ -48,7 +48,8 @@ jobs:
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
 
-      
+      - name: Clean Terraform lock file
+        run: rm -f .terraform.lock.hcl
 
       - name: Terraform Init
         run: terraform init -upgrade -backend-config="key=${TF_VAR_environment}.tfstate"
@@ -59,15 +60,15 @@ jobs:
             echo "Lock file not found. Running terraform init..."
             terraform init -backend-config="key=${TF_VAR_environment}.tfstate"
           fi
+
           if grep -q "registry.terraform.io/hashicorp/azurerm" .terraform.lock.hcl; then
-            echo "azurerm provider is locked."
+            echo "azurerm provider is locked:"
             grep "registry.terraform.io/hashicorp/azurerm" .terraform.lock.hcl
           else
             echo "azurerm provider is NOT locked!"
             exit 1
           fi
 
-        
       - name: Remove old plan file (if exists)
         run: |
           if [ -f tfplan-${TF_VAR_environment}.out ]; then
@@ -136,16 +137,17 @@ jobs:
         with:
           name: terraform-plan-${{ env.TF_VAR_environment }}
           path: terraform
-      
-      - name: Check azurerm provider is locked
+
+      - name: Confirm azurerm provider lock before apply
         run: |
-          LOCK_FILE_PATH=$(find . -name ".terraform.lock.hcl" | head -n 1)
-          if [ -z "$LOCK_FILE_PATH" ]; then
-            echo "Lock file not found!"
+          if [ ! -f .terraform.lock.hcl ]; then
+            echo "Lock file not found in terraform directory!"
             exit 1
           fi
-          if grep -q "registry.terraform.io/hashicorp/azurerm" "$LOCK_FILE_PATH"; then
-            echo "azurerm provider is locked."
+
+          if grep -q "registry.terraform.io/hashicorp/azurerm" .terraform.lock.hcl; then
+            echo "azurerm provider lock confirmed:"
+            grep "registry.terraform.io/hashicorp/azurerm" .terraform.lock.hcl
           else
             echo "azurerm provider is NOT locked!"
             exit 1
