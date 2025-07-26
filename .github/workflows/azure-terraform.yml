@@ -69,20 +69,22 @@ jobs:
           echo "Checking for terraform lock file..."
           pwd
           ls -la
-
-          if [ ! -f .terraform.lock.hcl ]; then
-            echo "Lock file not found in terraform directory!"
-            exit 1
+          echo "📂 Working directory: $(pwd)"
+          ls -la
+          LOCK_FILE=".terraform.lock.hcl"
+          if [ ! -f "$LOCK_FILE" ]; then
+            echo "Lock file not found. Re-running terraform init..."
             
+            terraform init -backend-config="key=${TF_VAR_environment}.tfstate"
+
           fi
 
-          if grep -q "registry.terraform.io/hashicorp/azurerm" .terraform.lock.hcl; then
-             echo "azurerm provider lock confirmed:"
-             grep "registry.terraform.io/hashicorp/azurerm" .terraform.lock.hcl
-          else
-            echo "azurerm provider is NOT locked!"
+          if [ ! -f "$LOCK_FILE" ]; then
+             echo "Lock file still missing. Failing safely."
           exit 1
           fi
+          echo "azurerm provider lock check:"
+          grep "registry.terraform.io/hashicorp/azurerm" "$LOCK_FILE"
 
       - name: Remove old plan file (if exists)
         run: |
