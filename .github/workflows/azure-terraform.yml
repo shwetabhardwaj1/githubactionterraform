@@ -119,4 +119,4 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve tfplan-${TF_VAR_environment}.out
+        run: terraform apply -auto-approve terraform/tfplan-${TF_VAR_environment}.out
