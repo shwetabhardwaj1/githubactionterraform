@@ -62,14 +62,14 @@ jobs:
           pwd
           ls -la
           echo "Inspecting terraform subfolder:"
-          ls -la terraform/
+          ls -la ..
 
       - name: Ensure azurerm provider is locked
         run: |
           echo "Checking for terraform lock file..."
           pwd
           ls -la
-          echo "📂 Working directory: $(pwd)"
+          echo "Working directory: $(pwd)"
           ls -la
           LOCK_FILE=".terraform.lock.hcl"
           if [ ! -f "$LOCK_FILE" ]; then
