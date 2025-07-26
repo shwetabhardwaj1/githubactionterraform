@@ -113,7 +113,9 @@ jobs:
         run: ls -la 
 
       - name: Confirm lock file exists before upload
-        run: ls -l .terraform.lock.hcl
+        run: |
+          echo "Current directory: $(pwd)"
+          ls -l .terraform.lock.hcl
 
       - name: Upload tfplan files as artifact
         uses: actions/upload-artifact@v4
@@ -122,8 +124,15 @@ jobs:
           path: |
             terraform/tfplan-${{ env.TF_VAR_environment }}.out
             terraform/tfplan-${{ env.TF_VAR_environment }}.json
-            terraform/.terraform.lock.hcl
           retention-days: 90
+
+      - name: Upload lock file
+        if: ${{ env.TF_VAR_environment }}
+        uses: actions/upload-artifact@v4
+        with:
+         name: terraform-lock-${{ env.TF_VAR_environment }}
+         path: terraform/.terraform.lock.hcl
+
 
       - name: Inspect uploaded artifact
         uses: actions/download-artifact@v4
@@ -170,6 +179,13 @@ jobs:
         with:
           name: terraform-plan-${{ env.TF_VAR_environment }}
           path: terraform/
+
+      - name: Download lock file artifact
+        uses: actions/download-artifact@v4
+        with:
+         name: terraform-lock-${{ env.TF_VAR_environment }}
+         path: verify-artifact/
+
 
       - name: List files in directory after Artifact Download  # Helps confirm lock file is there
         run: ls -al
