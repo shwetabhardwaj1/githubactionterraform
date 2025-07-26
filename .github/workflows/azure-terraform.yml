@@ -149,7 +149,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: terraform-plan-${{ env.TF_VAR_environment }}
-          path: terraform
+          path: .
 
       - name: Confirm azurerm provider lock before apply
         run: |
