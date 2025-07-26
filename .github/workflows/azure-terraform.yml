@@ -133,12 +133,12 @@ jobs:
       
       - name: Check azurerm provider is locked
         run: |
-          if grep -q "registry.terraform.io/hashicorp/azurerm" terraform/.terraform.lock.hcl; then
-            echo "azurerm provider is locked."
-          else
-            echo "azurerm provider is NOT locked!"
-            exit 1
-          fi
+          find . -name ".terraform.lock.hcl"
+          grep -q "registry.terraform.io/hashicorp/azurerm" .terraform.lock.hcl && echo "azurerm locked." || {
+            echo "azurerm NOT locked!";
+            exit 1;
+          
+
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
