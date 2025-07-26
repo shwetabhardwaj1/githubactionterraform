@@ -54,8 +54,17 @@ jobs:
       - name: Terraform Init
         run: terraform init -upgrade -backend-config="key=${TF_VAR_environment}.tfstate"
 
+      
+            
+      - name: Debug Terraform folder
+        run: |
+          echo "Current location and files:"
+          pwd
+          ls -la
+          echo "Inspecting terraform subfolder:"
+          ls -la terraform/
+
       - name: Ensure azurerm provider is locked
-        working-directory: terraform
         run: |
           echo "Checking for terraform lock file..."
           pwd
