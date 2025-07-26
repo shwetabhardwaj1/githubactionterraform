@@ -5,21 +5,25 @@ on:
     branches:
       - main
 
+env:
+  TF_VAR_environment: ${{ secrets.AZURE_ENVIRONMENT }}  # Dynamically set environment, e.g., dev, SIT, prod
+
 jobs:
   terraform-plan:
     runs-on: ubuntu-latest
-    environment: Dev-Plan  # No Approval gate, just for planning
+    environment: Dev-Plan
     defaults:
       run:
         working-directory: terraform
     env:
+
       # Auth for Azure backend
       ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
       ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      # Vars for Terraform config
+      # Terraform config variables
       TF_VAR_client_id: ${{ secrets.AZURE_CLIENT_ID }}
       TF_VAR_client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
       TF_VAR_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
@@ -27,48 +31,37 @@ jobs:
       TF_VAR_location: ${{ secrets.AZURE_LOCATION }}
       TF_VAR_resourceGroupName: ${{ secrets.AZURE_RESOURCE_GROUP_NAME }}
       TF_VAR_storageAccountName: ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}
-      TF_VAR_environment: ${{ secrets.AZURE_ENVIRONMENT }}
-      
-      
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Print Azure Secrets (for debug only)
-        run: |
-          echo "Client ID: $TF_VAR_client_id"
-          echo "Tenant ID: $TF_VAR_tenant_id"
-
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
-        run: terraform init -backend-config="key=${{ env.TF_VAR_environment }}.tfstate"
-        
+        run: terraform init -backend-config="key=${TF_VAR_environment}.tfstate"
 
       - name: Terraform Validate
         run: terraform validate
         continue-on-error: false
 
       - name: Terraform Plan
-        run: terraform plan -out=tfplan-${{ env.TF_VAR_environment }}.out
+        run: terraform plan -out=tfplan-${TF_VAR_environment}.out
 
       - name: Show Terraform plan (human-readable)
-        run: terraform show tfplan-${{ env.TF_VAR_environment }}.out
-
+        run: terraform show tfplan-${TF_VAR_environment}.out
 
       - name: Export Terraform plan to JSON
-        run: terraform show -json tfplan-${{ env.TF_VAR_environment }}.out > tfplan-${{ env.TF_VAR_environment }}.json
+        run: terraform show -json tfplan-${TF_VAR_environment}.out > tfplan-${TF_VAR_environment}.json
 
       - name: Check if tfplan JSON exists
         run: |
-          if test -f tfplan-${{ env.TF_VAR_environment }}.json; then
+          if test -f tfplan-${TF_VAR_environment}.json; then
             echo "Plan file exists!"
           else
             echo "Plan file NOT found!"
             exit 1
-          fi
 
       - name: Upload tfplan.json as artifact
         uses: actions/upload-artifact@v4
@@ -78,20 +71,22 @@ jobs:
           retention-days: 90
 
   terraform-apply:
-    needs: terraform-plan  #  Ensures planning completes first
-    environment: Dev       #  Triggers approval gate if reviewers are set in Dev
+    needs: terraform-plan
+    environment: Dev
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: terraform
     env:
+      
+
       # Auth for Azure backend
       ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
       ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      # Vars for Terraform config
+      # Terraform config variables
       TF_VAR_client_id: ${{ secrets.AZURE_CLIENT_ID }}
       TF_VAR_client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
       TF_VAR_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
@@ -99,7 +94,6 @@ jobs:
       TF_VAR_location: ${{ secrets.AZURE_LOCATION }}
       TF_VAR_resourceGroupName: ${{ secrets.AZURE_RESOURCE_GROUP_NAME }}
       TF_VAR_storageAccountName: ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}
-      TF_VAR_environment: ${{ secrets.AZURE_ENVIRONMENT }}
 
     steps:
       - name: Checkout code
@@ -109,5 +103,4 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve "tfplan-${{ env.TF_VAR_environment }}.out"
-
+        run: terraform apply -auto-approve tfplan-${TF_VAR_environment}.out
