@@ -113,7 +113,7 @@ jobs:
         run: ls -la 
 
       - name: Confirm lock file exists before upload
-        run: ls -l terraform/.terraform.lock.hcl
+        run: ls -l .terraform.lock.hcl
 
       - name: Upload tfplan files as artifact
         uses: actions/upload-artifact@v4
