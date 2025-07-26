@@ -145,6 +145,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Show working directory  # Add this debug step early
+        run: pwd
+
+      - name: List files in directory  # Helps confirm lock file is there
+        run: ls -al
+
       - name: Download tfplan artifact
         uses: actions/download-artifact@v4
         with:
