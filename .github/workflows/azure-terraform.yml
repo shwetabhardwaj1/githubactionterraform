@@ -27,7 +27,7 @@ jobs:
       TF_VAR_location: ${{ secrets.AZURE_LOCATION }}
       TF_VAR_resourceGroupName: ${{ secrets.AZURE_RESOURCE_GROUP_NAME }}
       TF_VAR_storageAccountName: ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}
-      TF_VAR_environment: ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}
+      TF_VAR_environment: ${{ secrets.AZURE_ENVIRONMENT }}
       
       
 
@@ -45,8 +45,7 @@ jobs:
 
       - name: Terraform Init
         run: terraform init -backend-config="key=${{ env.TF_VAR_environment }}.tfstate"
-        env:
-           TF_VAR_environment: dev
+        
 
       - name: Terraform Validate
         run: terraform validate
@@ -100,7 +99,7 @@ jobs:
       TF_VAR_location: ${{ secrets.AZURE_LOCATION }}
       TF_VAR_resourceGroupName: ${{ secrets.AZURE_RESOURCE_GROUP_NAME }}
       TF_VAR_storageAccountName: ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}
-      TF_VAR_environment: ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}
+      TF_VAR_environment: ${{ secrets.AZURE_ENVIRONMENT }}
 
     steps:
       - name: Checkout code
