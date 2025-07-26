@@ -62,6 +62,8 @@ jobs:
           else
             echo "Plan file NOT found!"
             exit 1
+          fi
+
 
       - name: Upload tfplan.json as artifact
         uses: actions/upload-artifact@v4
