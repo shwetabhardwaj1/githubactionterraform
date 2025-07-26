@@ -69,8 +69,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: terraform-plan-${{ env.TF_VAR_environment }}
-          path: tfplan-${{ env.TF_VAR_environment }}.json
+          path: terraform/tfplan-${{ env.TF_VAR_environment }}.json
           retention-days: 90
+
 
   terraform-apply:
     needs: terraform-plan
