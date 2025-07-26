@@ -55,6 +55,7 @@ jobs:
         run: terraform init -upgrade -backend-config="key=${TF_VAR_environment}.tfstate"
 
       - name: Ensure azurerm provider is locked
+        working-directory: terraform
         run: |
           if [ ! -f .terraform.lock.hcl ]; then
             echo "Lock file not found in terraform directory!"
