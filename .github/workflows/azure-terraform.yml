@@ -53,15 +53,15 @@ jobs:
       - name: Terraform Init
         run: terraform init -upgrade -backend-config="key=${TF_VAR_environment}.tfstate"
 
-      - name: Check azurerm provider is locked
+      - name: Ensure azurerm provider is locked
         run: |
-          LOCK_FILE_PATH=$(find . -name ".terraform.lock.hcl" | head -n 1)
-          if [ -z "$LOCK_FILE_PATH" ]; then
-            echo "Lock file not found!"
-            exit 1
+          if [ ! -f .terraform.lock.hcl ]; then
+            echo "Lock file not found. Running terraform init..."
+            terraform init -backend-config="key=${TF_VAR_environment}.tfstate"
           fi
-          if grep -q "registry.terraform.io/hashicorp/azurerm" "$LOCK_FILE_PATH"; then
+          if grep -q "registry.terraform.io/hashicorp/azurerm" .terraform.lock.hcl; then
             echo "azurerm provider is locked."
+            grep "registry.terraform.io/hashicorp/azurerm" .terraform.lock.hcl
           else
             echo "azurerm provider is NOT locked!"
             exit 1
