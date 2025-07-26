@@ -110,6 +110,13 @@ jobs:
             exit 1
           fi
 
+
+      - name: List files before upload
+        run: ls -la terraform/
+
+      - name: Confirm lock file exists before upload
+        run: ls -l terraform/.terraform.lock.hcl
+
       - name: Upload tfplan files as artifact
         uses: actions/upload-artifact@v4
         with:
@@ -119,6 +126,16 @@ jobs:
             terraform/tfplan-${{ env.TF_VAR_environment }}.json
             terraform/.terraform.lock.hcl
           retention-days: 90
+
+      - name: Inspect uploaded artifact
+        uses: actions/download-artifact@v4
+        with:
+         name: terraform-plan-${{ env.TF_VAR_environment }}
+         path: verify-artifact/
+
+      - name: List contents
+        run: ls -la verify-artifact/
+
 
   terraform-apply:
     needs: terraform-plan
