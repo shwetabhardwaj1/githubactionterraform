@@ -48,9 +48,20 @@ jobs:
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
 
+      - name: Clean Terraform lock file
+        run: rm -f .terraform.lock.hcl
+
       - name: Terraform Init
         run: terraform init -upgrade -backend-config="key=${TF_VAR_environment}.tfstate"
 
+      - name: Check azurerm provider is locked
+        run: |
+          if grep -q "azurerm" .terraform.lock.hcl; then
+            echo "azurerm provider is locked."
+          else
+            echo "azurerm provider is NOT locked!"
+            exit 1
+          fi
       - name: Remove old plan file (if exists)
         run: |
           if [ -f tfplan-${TF_VAR_environment}.out ]; then
