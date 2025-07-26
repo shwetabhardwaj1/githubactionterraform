@@ -16,7 +16,7 @@ jobs:
       run:
         working-directory: terraform
     env:
-
+      TF_VAR_environment: ${{ secrets.AZURE_ENVIRONMENT }}
       # Auth for Azure backend
       ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
@@ -80,7 +80,7 @@ jobs:
       run:
         working-directory: terraform
     env:
-      
+      TF_VAR_environment: ${{ secrets.AZURE_ENVIRONMENT }}
 
       # Auth for Azure backend
       ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
