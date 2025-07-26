@@ -56,12 +56,19 @@ jobs:
 
       - name: Check azurerm provider is locked
         run: |
-          if grep -q "azurerm" .terraform.lock.hcl; then
+          LOCK_FILE_PATH=$(find . -name ".terraform.lock.hcl" | head -n 1)
+          if [ -z "$LOCK_FILE_PATH" ]; then
+            echo "Lock file not found!"
+            exit 1
+          fi
+          if grep -q "registry.terraform.io/hashicorp/azurerm" "$LOCK_FILE_PATH"; then
             echo "azurerm provider is locked."
           else
             echo "azurerm provider is NOT locked!"
             exit 1
           fi
+
+        
       - name: Remove old plan file (if exists)
         run: |
           if [ -f tfplan-${TF_VAR_environment}.out ]; then
@@ -133,12 +140,17 @@ jobs:
       
       - name: Check azurerm provider is locked
         run: |
-          find . -name ".terraform.lock.hcl"
-          grep -q "registry.terraform.io/hashicorp/azurerm" .terraform.lock.hcl && echo "azurerm locked." || {
-            echo "azurerm NOT locked!";
-            exit 1;
-          
-
+          LOCK_FILE_PATH=$(find . -name ".terraform.lock.hcl" | head -n 1)
+          if [ -z "$LOCK_FILE_PATH" ]; then
+            echo "Lock file not found!"
+            exit 1
+          fi
+          if grep -q "registry.terraform.io/hashicorp/azurerm" "$LOCK_FILE_PATH"; then
+            echo "azurerm provider is locked."
+          else
+            echo "azurerm provider is NOT locked!"
+            exit 1
+          fi
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
