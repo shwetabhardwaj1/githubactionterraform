@@ -109,10 +109,8 @@ jobs:
             echo "Plan file NOT found!"
             exit 1
           fi
-
-
       - name: List files before upload
-        run: ls -la terraform/
+        run: ls -la 
 
       - name: Confirm lock file exists before upload
         run: ls -l terraform/.terraform.lock.hcl
