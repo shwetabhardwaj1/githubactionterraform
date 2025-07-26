@@ -57,6 +57,10 @@ jobs:
       - name: Ensure azurerm provider is locked
         working-directory: terraform
         run: |
+          echo "Checking for terraform lock file..."
+          pwd
+          ls -la
+
           if [ ! -f .terraform.lock.hcl ]; then
             echo "Lock file not found in terraform directory!"
             exit 1
