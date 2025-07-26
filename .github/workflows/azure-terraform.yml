@@ -148,14 +148,22 @@ jobs:
       - name: Show working directory  # Add this debug step early
         run: pwd
 
-      - name: List files in directory  # Helps confirm lock file is there
-        run: ls -al
+      
 
       - name: Download tfplan artifact
         uses: actions/download-artifact@v4
         with:
           name: terraform-plan-${{ env.TF_VAR_environment }}
-          path: .
+          path: terraform
+
+      - name: Download lock file artifact  # 👈 Add this immediately after
+        uses: actions/download-artifact@v3
+        with:
+          name: terraform-lock
+          path: terraform/
+
+      - name: List files in directory  # Helps confirm lock file is there
+        run: ls -al
 
       - name: Confirm azurerm provider lock before apply
         run: |
