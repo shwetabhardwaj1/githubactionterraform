@@ -42,8 +42,8 @@ jobs:
       - name: Terraform Init
         run: |
           terraform init -upgrade \
-            -backend-config="key=${TF_VAR_environment}.tfstate" \
-            -lockfile=readonly
+            -backend-config="key=${TF_VAR_environment}.tfstate" 
+            
 
       - name: Terraform Validate
         run: terraform validate
