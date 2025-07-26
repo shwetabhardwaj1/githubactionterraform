@@ -8,7 +8,7 @@ resource "azurerm_storage_account" "storageaccountdemo" {
 
   tags = {
     environment = "development"
-    application = "TerraformGitHubActions123"
+    application = "TerraformGitHubActions1231"
     managed_by  = "TerraformDemo1234567891"
 
   }

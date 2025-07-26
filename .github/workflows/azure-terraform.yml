@@ -62,11 +62,11 @@ jobs:
           fi
 
           if grep -q "registry.terraform.io/hashicorp/azurerm" .terraform.lock.hcl; then
-            echo "azurerm provider is locked:"
+             echo "azurerm provider lock confirmed:"
             grep "registry.terraform.io/hashicorp/azurerm" .terraform.lock.hcl
           else
-            echo "azurerm provider is NOT locked!"
-            exit 1
+          echo "azurerm provider is NOT locked!"
+          exit 1
           fi
 
       - name: Remove old plan file (if exists)
