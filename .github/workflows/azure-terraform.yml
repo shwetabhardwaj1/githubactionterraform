@@ -97,6 +97,7 @@ jobs:
           path: |
             terraform/tfplan-${{ env.TF_VAR_environment }}.out
             terraform/tfplan-${{ env.TF_VAR_environment }}.json
+            terraform/.terraform.lock.hcl
           retention-days: 90
 
   terraform-apply:
@@ -129,6 +130,15 @@ jobs:
         with:
           name: terraform-plan-${{ env.TF_VAR_environment }}
           path: terraform
+      
+      - name: Check azurerm provider is locked
+        run: |
+          if grep -q "registry.terraform.io/hashicorp/azurerm" terraform/.terraform.lock.hcl; then
+            echo "azurerm provider is locked."
+          else
+            echo "azurerm provider is NOT locked!"
+            exit 1
+          fi
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
