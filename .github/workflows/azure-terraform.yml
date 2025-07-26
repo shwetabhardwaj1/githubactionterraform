@@ -156,13 +156,15 @@ jobs:
           name: terraform-plan-${{ env.TF_VAR_environment }}
           path: terraform
 
+      - name: List files in directory after Artifact Download  # Helps confirm lock file is there
+        run: ls -al
       - name: Download lock file artifact  # Add this immediately after
         uses: actions/download-artifact@v4
         with:
-          name: terraform-lock
+          name: .terraform.lock.hcl
           path: terraform/
 
-      - name: List files in directory  # Helps confirm lock file is there
+      - name: List files in directory after Lock Download # Helps confirm lock file is there
         run: ls -al
 
       - name: Confirm azurerm provider lock before apply
