@@ -200,7 +200,7 @@ jobs:
 
       - name: Confirm azurerm provider lock before apply
         run: |
-          LOCK_FILE=".terraform.lock.hcl"
+          LOCK_FILE="terraform/.terraform.lock.hcl"
           echo "Checking for $LOCK_FILE"
 
           if [ ! -f "$LOCK_FILE" ]; then
