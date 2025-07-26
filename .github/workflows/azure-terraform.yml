@@ -127,7 +127,7 @@ jobs:
 
          echo "Current directory: $(pwd)"
          echo "Checking lock file presence:"
-         ls -l terraform/.terraform.lock.hcl
+         ls -l .terraform.lock.hcl
 
 
       - name: Upload lock file
@@ -135,7 +135,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
          name: terraform-lock-${{ env.TF_VAR_environment }}
-         path: terraform/.terraform.lock.hcl
+         path: .terraform.lock.hcl
 
 
       - name: Inspect uploaded artifact
