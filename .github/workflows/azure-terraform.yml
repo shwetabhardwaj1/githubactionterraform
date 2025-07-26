@@ -138,16 +138,15 @@ jobs:
          path: terraform/.terraform.lock.hcl
          include-hidden-files: true
 
+     
+      - name: Verify lock file after upload
+        run: |
+         echo "Listing all files in current directory:"
+         ls -la
 
-      - name: Inspect uploaded artifact
-        uses: actions/download-artifact@v4
-        with:
-         name: terraform-plan-${{ env.TF_VAR_environment }}
-         path: verify-artifact/
-
-      - name: List contents
-        run: ls -la verify-artifact/
-
+         echo "Current directory: $(pwd)"
+         echo "Checking lock file presence:"
+         ls -l .terraform.lock.hcl
 
   terraform-apply:
     needs: terraform-plan
