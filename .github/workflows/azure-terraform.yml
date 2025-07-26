@@ -153,8 +153,12 @@ jobs:
 
       - name: Confirm azurerm provider lock before apply
         run: |
-          if [ ! -f .terraform.lock.hcl ]; then
-            echo "Lock file not found in terraform directory!"
+          LOCK_FILE="../.terraform.lock.hcl"
+          echo "Checking for $LOCK_FILE"
+
+          if [ ! -f "$LOCK_FILE" ]; then
+            echo "Lock file not found!"
+
             exit 1
           fi
 
