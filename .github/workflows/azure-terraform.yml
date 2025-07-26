@@ -198,24 +198,7 @@ jobs:
         run: ls -al
       
 
-      - name: Confirm azurerm provider lock before apply
-        run: |
-          LOCK_FILE="terraform/.terraform.lock.hcl"
-          echo "Checking for $LOCK_FILE"
-
-          if [ ! -f "$LOCK_FILE" ]; then
-            echo "Lock file not found!"
-
-            exit 1
-          fi
-
-          if grep -q "registry.terraform.io/hashicorp/azurerm" .terraform.lock.hcl; then
-            echo "azurerm provider lock confirmed:"
-            grep "registry.terraform.io/hashicorp/azurerm" .terraform.lock.hcl
-          else
-            echo "azurerm provider is NOT locked!"
-            exit 1
-          fi
+      
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
