@@ -191,7 +191,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
          name: terraform-lock-${{ env.TF_VAR_environment }}
-         path: verify-artifact/
+         path: terraform/
 
 
       - name: List files in directory after Artifact Download  # Helps confirm lock file is there
