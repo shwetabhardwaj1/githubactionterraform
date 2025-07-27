@@ -29,5 +29,6 @@ resource "azurerm_windows_function_app" "demo_func" {
 resource "azurerm_role_assignment" "storage_contributor" {
   scope                = azurerm_storage_account.storageaccountdemo.id
   role_definition_name = "Storage Blob Data Contributor"
-  principal_id         = azurerm_windows_function_app.demo_func.identity.principal_id
+  principal_id         = azurerm_windows_function_app.demo_func.identity[0].principal_id
+
 }
