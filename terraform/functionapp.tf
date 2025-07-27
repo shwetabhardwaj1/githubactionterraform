@@ -7,7 +7,7 @@ resource "azurerm_windows_function_app" "demo_func" {
   storage_account_name = azurerm_storage_account.storageaccountdemo.name
   storage_account_access_key = azurerm_storage_account.storageaccountdemo.primary_access_key
 
-  functions_extension_version = "~4"  # Targets .NET 6+
+  functions_extension_version = "~4"  # Targets    .NET 6+
  site_config {
     application_stack {
       dotnet_version = "v6.0"  # Update to your desired .NET version
