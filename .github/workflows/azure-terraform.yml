@@ -235,7 +235,8 @@ jobs:
           run: dotnet build --configuration Release
 
         - name: Publish function app
-          run: dotnet publish --configuration Release --output ./publish
+          run: dotnet publish MyFunctionApp.csproj --configuration Release --output ../../publish
+
           working-directory: FunctionApps/MyFunctionApp
 
         - name: Azure CLI Login

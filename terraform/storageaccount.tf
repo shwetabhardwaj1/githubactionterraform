@@ -9,7 +9,7 @@ resource "azurerm_storage_account" "storageaccountdemo" {
   tags = {
     environment = "development"
     application = "Terfod1sGit1HubAc121"
-    managed_by  = "Te21234981156911"
+    managed_by  = "Te251234981156911"
 
   }
 }
