@@ -10,7 +10,7 @@ resource "azurerm_windows_function_app" "demo_func" {
   functions_extension_version = "~4"  # Targets .NET 6+
  site_config {
     application_stack {
-      dotnet_version = "6.0"  # Update to your desired .NET version
+      dotnet_version = "v6.0"  # Update to your desired .NET version
     }
   }
 
@@ -29,5 +29,5 @@ resource "azurerm_windows_function_app" "demo_func" {
 resource "azurerm_role_assignment" "storage_contributor" {
   scope                = azurerm_storage_account.storageaccountdemo.id
   role_definition_name = "Storage Blob Data Contributor"
-  principal_id         = azurerm_function_app.demo_func.identity.principal_id
+  principal_id         = azurerm_windows_function_app.demo_func.identity.principal_id
 }
