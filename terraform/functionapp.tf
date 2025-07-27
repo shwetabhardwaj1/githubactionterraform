@@ -1,7 +1,7 @@
 # Window Function App with Managed Identity
 resource "azurerm_windows_function_app" "demo_func" {
   name                = "my-windows-function-app-demo"
-  location            = data.azurerm_resource_group.rg.location
+  location            = "UK South"
   resource_group_name = data.azurerm_resource_group.rg.name
   service_plan_id            = azurerm_service_plan.function_plan.id
   storage_account_name = azurerm_storage_account.storageaccountdemo.name
