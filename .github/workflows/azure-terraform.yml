@@ -33,6 +33,7 @@ jobs:
       TF_VAR_location: ${{ secrets.AZURE_LOCATION }}
       TF_VAR_resourceGroupName: ${{ secrets.AZURE_RESOURCE_GROUP_NAME }}
       TF_VAR_storageAccountName: ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}
+      AZURE_FUNCTION_APP_NAME: ${{ secrets.AZURE_FUNCTION_APP_NAME }}
 
     steps:
       - name: Checkout code
@@ -169,6 +170,7 @@ jobs:
       TF_VAR_location: ${{ secrets.AZURE_LOCATION }}
       TF_VAR_resourceGroupName: ${{ secrets.AZURE_RESOURCE_GROUP_NAME }}
       TF_VAR_storageAccountName: ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}
+      
 
     steps:
       - name: Checkout code
@@ -210,6 +212,7 @@ jobs:
 
   function-apply:
       needs: terraform-apply
+      environment: Dev
       runs-on: ubuntu-latest
       defaults: 
         run:
