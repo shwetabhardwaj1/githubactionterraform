@@ -5,6 +5,7 @@ using System.Net;
 
 namespace MyFunctionApp.Functions;
 
+using System.Threading.Tasks;
 public class HelloFunction
 {
     private readonly ILogger _logger;

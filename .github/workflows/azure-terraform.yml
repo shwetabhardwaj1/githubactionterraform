@@ -8,6 +8,7 @@ on:
       - '**.tf'
       - '.terraform.lock.hcl'
       - '**/*.tfvars'
+      - '.cs*'
 
 env:
   TF_VAR_environment: ${{ secrets.AZURE_ENVIRONMENT }}
