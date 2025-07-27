@@ -18,6 +18,7 @@ resource "azurerm_windows_function_app" "demo_func" {
   app_settings = {
     "FUNCTIONS_WORKER_RUNTIME"     = "dotnet"
     "WEBSITE_RUN_FROM_PACKAGE"     = "1"
+    AzureWebJobsStorage = azurerm_storage_account.storageaccountdemo.primary_connection_string
   }
 
   identity {
