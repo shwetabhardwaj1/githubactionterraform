@@ -212,7 +212,9 @@ jobs:
       runs-on: ubuntu-latest
       defaults: 
         run:
-          working-directory: FunctionApps
+          working-directory: FunctionApps/MyFunctionApp
+
+
       steps:
         - name: Checkout code
           uses: actions/checkout@v3
@@ -231,13 +233,18 @@ jobs:
         - name: Publish function app
           run: dotnet publish --configuration Release --output ./publish
 
-        - name: Azure Login with Service Principal
-          uses: azure/login@v2
-          with:
-            client-id: ${{ secrets.AZURE_CLIENT_ID }}
-            tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-            subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-            client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+        - name: Azure CLI Login
+          run: |
+            az login --service-principal \
+             --username ${{ secrets.AZURE_CLIENT_ID }} \
+             --password ${{ secrets.AZURE_CLIENT_SECRET }} \
+             --tenant ${{ secrets.AZURE_TENANT_ID }}
+            
+          env:
+            AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+            AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+            AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+            
 
         - name: Deploy to Azure Function App
           uses: azure/functions-action@v1
