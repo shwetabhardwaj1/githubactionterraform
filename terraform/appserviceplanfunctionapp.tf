@@ -4,5 +4,6 @@ resource "azurerm_service_plan" "function_plan" {
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
   os_type             = "Windows"
-  sku_name            = "Y1"  # This corresponds to the Consumption plan
+  sku_name            = "B1"  
+  worker_count = 1
 }
