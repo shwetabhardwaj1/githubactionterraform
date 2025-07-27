@@ -250,6 +250,8 @@ jobs:
             AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
             AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
             
+        - name: Check publish folder contents
+          run: ls -la FunctionApps/MyFunctionApp/publish
 
         - name: Deploy to Azure Function App
           uses: azure/functions-action@v1
