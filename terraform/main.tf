@@ -11,9 +11,13 @@ terraform {
     resource_group_name  = "terraform-demo-dev-rg"
     storage_account_name = "tfstatedevdeploy"
     container_name       = "tfstate"
-    key = "${var.environment}.tfstate"
+    key                  = "${var.environment}.tfstate"
   }
 
+}
+
+data "azurerm_resource_group" "rg" {
+  name = "terraform-demo-dev-rg"
 }
 
 
